@@ -367,6 +367,7 @@ static void ccl_compute_legendre_polynomial_binned(int corr_type,
   double *P_hi = NULL;
   double *P_lo = NULL;
 
+  //Initialize with zeros
   for (ell = 0; ell <= ell_max; ell++)
     Pl_theta[ell] = 0.0;
 
@@ -378,7 +379,7 @@ static void ccl_compute_legendre_polynomial_binned(int corr_type,
 
   dx = x_hi - x_lo;
 
-  /* Need up to ell_max + 1 because B2/B5 involve P_{ell+1}. */
+  /* Need up to ell_max + 1 because some expressions involve P_{ell+1}. */
   P_hi = malloc((ell_max + 2) * sizeof(double));
   P_lo = malloc((ell_max + 2) * sizeof(double));
   if ((P_hi == NULL) || (P_lo == NULL)) {
@@ -463,15 +464,15 @@ static void ccl_compute_legendre_polynomial_binned(int corr_type,
 
       if (corr_type == CCL_CORR_LP) {
         term_hi +=  2.0 * (ell - 1.0) * (x_hi * dPl_hi - P_hi[ell])
-                 -  2.0 * (ell + 2.0) * dPlm1_hi;
+                   -2.0 * (ell + 2.0) * dPlm1_hi;
         term_lo +=  2.0 * (ell - 1.0) * (x_lo * dPl_lo - P_lo[ell])
                  -  2.0 * (ell + 2.0) * dPlm1_lo;
       }
       else {
         term_hi += -2.0 * (ell - 1.0) * (x_hi * dPl_hi - P_hi[ell])
-                 +  2.0 * (ell + 2.0) * dPlm1_hi;
+                   +2.0 * (ell + 2.0) * dPlm1_hi;
         term_lo += -2.0 * (ell - 1.0) * (x_lo * dPl_lo - P_lo[ell])
-                 +  2.0 * (ell + 2.0) * dPlm1_lo;
+                   +2.0 * (ell + 2.0) * dPlm1_lo;
       }
 
       avgGpm = (term_hi - term_lo) / dx;

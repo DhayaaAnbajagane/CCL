@@ -20,7 +20,7 @@ CCL_BEGIN_DECLS
  * @param ell : multipoles at which the power spectrum is evaluated
  * @param cls : input power spectrum
  * @param n_theta : number of output values of the separation angle (theta)
- * @param theta : values of the separation angle in degrees.
+ * @param theta : values of the separation angle in degrees. If theta_max is passed, this is the left/min edge of the separation bin
  * @param wtheta : the values of the correlation function at the angles above will be returned in this array, which should be pre-allocated
  * @param do_taper_cl :
  * @param taper_cl_limits
@@ -34,16 +34,11 @@ CCL_BEGIN_DECLS
  *  - CCL_CORR_LP : spin2-spin2 (xi+)
  *  - CCL_CORR_LM : spin2-spin2 (xi-)
  * Currently supported spin-0 fields are number counts and CMB lensing. The only spin-2 is currently shear.
+ * @param theta_max : values of the max/right edge of the separation bin in degrees. Default is None
  */
 void ccl_correlation(ccl_cosmology *cosmo,
 		     int n_ell,double *ell,double *cls,
 		     int n_theta,double *theta,double *wtheta,
-		     int corr_type,int do_taper_cl,double *taper_cl_limits,int flag_method,
-		     int *status);
-
-void ccl_correlation_binned(ccl_cosmology *cosmo,
-		     int n_ell,double *ell,double *cls,
-		     int n_theta,double *theta_min,double *theta_max,double *wtheta,
 		     int corr_type,int do_taper_cl,double *taper_cl_limits,int flag_method,
 		     int *status);
 
