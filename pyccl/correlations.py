@@ -71,6 +71,10 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
         * :math:`s_a=2`, :math:`s_b=0` e.g. galaxy-shear, and :math:`\kappa`-shear
         * :math:`s_a=s_b=2` e.g. shear-shear.
 
+    Bin-averaging, where we predict the average correlation within a given theta-bin
+    is also implemented, but only for the Legendre method, as the bin-averaging can
+    be done analytically in that case.
+
     .. note::
         For scales smaller than :math:`\sim 0.1^{\circ}`, the input power
         spectrum should be sampled to sufficienly high :math:`\ell` to ensure
@@ -102,7 +106,8 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
             ``'FFTLog'`` (fast integration with FFTLog), ``'Legendre'``
             (brute-force sum over Legendre polynomials).
         theta_max (:obj:`float` or `array1): Maximum angular separation(s) for the given
-            separation bin (in degrees). If passed
+            separation bin (in degrees). If passed, then the `theta` input is interpreted
+            as a minimum/left edge of the bin.
 
     Returns:
         (:obj:`float` or `array`): Value(s) of the correlation function at the
@@ -130,7 +135,7 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
             assert theta.size == theta_max.size, f"The theta and theta_max array have different sizes ({theta.size} != {theta_max.size})"
 
         assert not np.allclose(theta, theta_max), "theta and theta_max are the same array. Left and right bin edges cannot be the same."
-        
+
     if np.all(np.array(C_ell) == 0):
         # short-cut and also avoid integration errors
         wth = np.zeros_like(theta)
