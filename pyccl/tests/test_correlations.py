@@ -29,6 +29,14 @@ def test_correlation_smoke(method):
         assert np.all(np.isfinite(corr))
         assert np.shape(corr) == np.shape(tval)
 
+    if method == 'legendre':
+        for tval in [t_arr, t_lst, t_scl, t_int]:
+            corr = ccl.correlation(
+                COSMO, ell=ell, C_ell=cl, theta=tval, type='NN', method=method,
+                theta_max=tval*2)
+            assert np.all(np.isfinite(corr))
+            assert np.shape(corr) == np.shape(tval)
+
 
 @pytest.mark.parametrize(
     'rval',
