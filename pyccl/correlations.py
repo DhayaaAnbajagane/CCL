@@ -129,8 +129,8 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
     if scalar := isinstance(theta, (int, float)):
         theta = np.array([theta, ])
         
-        if theta_max is not None:
-            if scalar := isinstance(theta_max, (int, float)):
+        if binned := theta_max is not None:
+            if isinstance(theta_max, (int, float)):
                 theta_max = np.array([theta_max, ])
             assert theta.size == theta_max.size, f"The theta and theta_max array have different sizes ({theta.size} != {theta_max.size})"
             assert not np.allclose(theta, theta_max), "theta and theta_max are the same array. Left and right bin edges cannot be the same."
@@ -139,7 +139,7 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
         # short-cut and also avoid integration errors
         wth = np.zeros_like(theta)
     else:
-        if theta_max is None:
+        if binned:
             wth, status = lib.correlation_vec(cosmo, ell, C_ell, theta,
                                             correlation_types[type],
                                             correlation_methods[method],
