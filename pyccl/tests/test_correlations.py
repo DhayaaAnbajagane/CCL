@@ -31,9 +31,15 @@ def test_correlation_smoke(method):
 
     if method == 'legendre':
         for tval in [t_arr, t_lst, t_scl, t_int]:
+
+            if isinstance(tval, list):
+                tmax = [t*2 for t in tval]
+            else:
+                tmax = tval*2
+
             corr = ccl.correlation(
                 COSMO, ell=ell, C_ell=cl, theta=tval, type='NN', method=method,
-                theta_max=tval*2)
+                theta_max=tmax)
             assert np.all(np.isfinite(corr))
             assert np.shape(corr) == np.shape(tval)
 
