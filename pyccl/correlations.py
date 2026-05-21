@@ -42,7 +42,8 @@ correlation_types = {
 }
 
 
-def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_max = None):
+def correlation(cosmo, *, ell, C_ell, theta,
+                type='NN', method='fftlog', theta_max=None):
     r"""Compute the angular correlation function.
 
     .. math::
@@ -123,32 +124,45 @@ def correlation(cosmo, *, ell, C_ell, theta, type='NN', method='fftlog', theta_m
 
     if method not in correlation_methods.keys():
         raise ValueError(f"Invalid correlation method {method}.")
-    
 
     # Convert scalar input into an array
     if scalar := isinstance(theta, (int, float)):
         theta = np.array([theta, ])
-        
-        if binned := theta_max is not None:
+
+        if theta_max is not None:
             if isinstance(theta_max, (int, float)):
                 theta_max = np.array([theta_max, ])
-            assert theta.size == theta_max.size, f"The theta and theta_max array have different sizes ({theta.size} != {theta_max.size})"
-            assert not np.allclose(theta, theta_max), "theta and theta_max are the same array. Left and right bin edges cannot be the same."
+
+            assert theta.size == theta_max.size, \
+                (f"theta and theta_max have different sizes"
+                 f"({theta.size} != {theta_max.size})")
+
+            assert not np.allclose(theta, theta_max), \
+                "theta_min cannot be the same as theta_max"
 
     if np.all(np.array(C_ell) == 0):
         # short-cut and also avoid integration errors
         wth = np.zeros_like(theta)
     else:
-        if binned:
-            wth, status = lib.correlation_vec(cosmo, ell, C_ell, theta,
-                                            correlation_types[type],
-                                            correlation_methods[method],
-                                            len(theta), status)
+        if theta_max is None:
+            wth, status = lib.correlation_vec(
+                cosmo, ell, C_ell, theta,
+                correlation_types[type],
+                correlation_methods[method],
+                len(theta), status)
         else:
-            wth, status = lib.correlation_vec_binned(cosmo, ell, C_ell, theta, theta_max,
-                                                 correlation_types[type],
-                                                 correlation_methods[method],
-                                                 len(theta), status)
+            wth, status = lib.correlation_vec_binned(
+                cosmo,
+                ell,
+                C_ell,
+                theta,
+                theta_max,
+                correlation_types[type],
+                correlation_methods[method],
+                len(theta),
+                status,
+            )
+
     check(status, cosmo_in)
     if scalar:
         return wth[0]
