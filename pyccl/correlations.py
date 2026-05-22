@@ -72,9 +72,11 @@ def correlation(cosmo, *, ell, C_ell, theta,
         * :math:`s_a=2`, :math:`s_b=0` e.g. galaxy-shear, and :math:`\kappa`-shear
         * :math:`s_a=s_b=2` e.g. shear-shear.
 
-    Bin-averaging, where we predict the average correlation within a given theta-bin
-    is also implemented, but only for the Legendre method, as the bin-averaging can
-    be done analytically in that case.
+    Bin-averaging, where we predict the average correlation within a given theta-bin,
+    is also implemented. This is only available for the Legendre method, as the 
+    bin-averaging can be done analytically in that case. The method we use for the
+    NN, NG, and GG+/- correlations follow Eq 65, B1, and B5, respectively, from 
+    arxiv:2012.08568
 
     .. note::
         For scales smaller than :math:`\sim 0.1^{\circ}`, the input power
